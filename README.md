@@ -717,7 +717,7 @@ Completely new KAYA project.
 | **Phase 7** | Validated — Awaiting Manual QA |
 | **Phase 8** | Validated — Awaiting Manual QA |
 | **Phase 9** | Validated — Awaiting Manual QA |
-| **Phase 10** | Not Started |
+| **Phase 10** | Validated — Awaiting Manual QA |
 | **Phase 11** | Not Started |
 | **Phase 12** | Not Started |
 | **Phase 13** | Not Started |

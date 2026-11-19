@@ -9,6 +9,8 @@ import 'package:kaya/core/widgets/kaya_state_views.dart';
 import 'package:kaya/core/widgets/kaya_status_badge.dart';
 import 'package:kaya/features/auth/application/auth_controller.dart';
 import 'package:kaya/features/auth/presentation/profile_section_card.dart';
+import 'package:kaya/features/notifications/application/notification_controller.dart';
+import 'package:kaya/features/notifications/presentation/notifications_settings_card.dart';
 
 /// Interactive UI state modes for manual QA and automated widget testing.
 enum KayaPreviewStateMode { ready, loading, empty, error }
@@ -19,10 +21,12 @@ class SettingsScreen extends StatefulWidget {
     super.key,
     required this.onReplayOnboarding,
     this.authController,
+    this.notificationController,
   });
 
   final VoidCallback onReplayOnboarding;
   final AuthController? authController;
+  final NotificationController? notificationController;
 
   @override
   State<SettingsScreen> createState() => _SettingsScreenState();
@@ -73,6 +77,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
           if (widget.authController != null &&
               widget.authController!.isAuthenticated) ...<Widget>[
             ProfileSectionCard(controller: widget.authController!),
+            const SizedBox(height: AppSpacing.md),
+          ],
+          if (widget.notificationController != null) ...<Widget>[
+            NotificationsSettingsCard(
+              controller: widget.notificationController!,
+            ),
             const SizedBox(height: AppSpacing.md),
           ],
           KayaCard(

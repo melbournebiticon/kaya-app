@@ -14,6 +14,8 @@ import 'package:kaya/features/life_vault/application/life_vault_controller.dart'
 import 'package:kaya/features/life_vault/data/in_memory_life_vault_repository.dart';
 import 'package:kaya/features/money/application/money_controller.dart';
 import 'package:kaya/features/money/data/in_memory_money_repository.dart';
+import 'package:kaya/features/notifications/application/notification_controller.dart';
+import 'package:kaya/features/notifications/domain/local_notification_gateway.dart';
 import 'package:kaya/features/onboarding/presentation/onboarding_screen.dart';
 import 'package:kaya/features/reminders/application/reminder_controller.dart';
 import 'package:kaya/features/reminders/data/in_memory_reminder_repository.dart';
@@ -41,6 +43,7 @@ class KayaApp extends StatefulWidget {
     this.lifeVaultController,
     this.lifeOrganizationController,
     this.assistantController,
+    this.notificationController,
     this.backendRepositories,
     this.requireAuthentication = false,
   });
@@ -55,6 +58,7 @@ class KayaApp extends StatefulWidget {
   final LifeVaultController? lifeVaultController;
   final LifeOrganizationController? lifeOrganizationController;
   final AssistantController? assistantController;
+  final NotificationController? notificationController;
   final KayaBackendRepositories? backendRepositories;
   final bool requireAuthentication;
 
@@ -72,6 +76,7 @@ class _KayaAppState extends State<KayaApp> {
   late LifeVaultController _lifeVaultController;
   late LifeOrganizationController _lifeOrganizationController;
   late AssistantController _assistantController;
+  late NotificationController _notificationController;
   bool _ownsAuthController = false;
   bool _ownsTaskController = false;
   bool _ownsMoneyController = false;
@@ -80,6 +85,7 @@ class _KayaAppState extends State<KayaApp> {
   bool _ownsLifeVaultController = false;
   bool _ownsLifeOrganizationController = false;
   bool _ownsAssistantController = false;
+  bool _ownsNotificationController = false;
 
   bool get _enforceAuth =>
       widget.requireAuthentication ||
@@ -223,6 +229,21 @@ class _KayaAppState extends State<KayaApp> {
       _ownsAssistantController = true;
     }
 
+    if (widget.notificationController != null) {
+      _notificationController = widget.notificationController!;
+    } else {
+      _notificationController = NotificationController(
+        gateway: InMemoryLocalNotificationGateway(),
+        taskController: _taskController,
+        billController: _billController,
+        reminderController: _reminderController,
+        lifeVaultController: _lifeVaultController,
+        lifeOrganizationController: _lifeOrganizationController,
+        initialUserId: initialUid,
+      );
+      _ownsNotificationController = true;
+    }
+
     _authController.addListener(_handleAuthChanged);
     if (_authController.isAuthenticated) {
       _bindAllModulesToUser(
@@ -259,6 +280,9 @@ class _KayaAppState extends State<KayaApp> {
     if (_ownsAssistantController) {
       _assistantController.dispose();
     }
+    if (_ownsNotificationController) {
+      _notificationController.dispose();
+    }
     super.dispose();
   }
 
@@ -267,6 +291,7 @@ class _KayaAppState extends State<KayaApp> {
     SupportedCurrency? preferredCurrency,
   }) async {
     _assistantController.bindAuthenticatedUser(uid);
+    await _notificationController.bindAuthenticatedUser(uid);
     await _taskController.bindAuthenticatedUser(uid);
     await _moneyController.bindAuthenticatedUser(
       uid,
@@ -382,6 +407,7 @@ class _KayaAppState extends State<KayaApp> {
           lifeVaultController: _lifeVaultController,
           lifeOrganizationController: _lifeOrganizationController,
           assistantController: _assistantController,
+          notificationController: _notificationController,
         ),
       },
     );

@@ -2,6 +2,21 @@
 
 All notable changes to the **KAYA** project will be documented in this file.
 
+## [0.10.0] - 2026-11-19 — Phase 10: Notifications & Automation
+
+### Added
+- **Android Manifest Permissions (`android/app/src/main/AndroidManifest.xml`):**
+  - Added `POST_NOTIFICATIONS` and `RECEIVE_BOOT_COMPLETED` permissions for Android local reminders.
+- **Database Migration (`supabase/migrations/20261114000008_phase10_notifications.sql`):**
+  - Created RLS-enforced `public.notification_preferences` table storing per-user toggles, reminder times, advance lead days, and quiet hours.
+- **Deterministic Notification Engine, Quiet Hours & Gateway (`lib/features/notifications/`):**
+  - Implemented `NotificationPermissionStatus`, `KayaNotificationChannel`, `QuietHoursWindow` (overnight & same-day deferral), `NotificationPreferences`, `ScheduledKayaNotification` (redacted `toString()`), `NotificationScheduleEngine` (stable FNV-1a ID deduplication, excludes completed tasks & paid bills, recurring weekly routines, privacy-safe document alerts), `LocalNotificationGateway`, `InMemoryLocalNotificationGateway`, and `NotificationController`.
+- **Settings UI & App Shell Integration (`NotificationsSettingsCard`, `SettingsScreen`, `KayaAppShell`, `KayaApp`):**
+  - Added permission explanation & request flow, master enable/disable switch, per-category toggles, Quiet Hours toggle, and active scheduled alert preview inside `SettingsScreen`.
+  - Wired immediate cancellation of all scheduled alerts on disable or logout.
+- **Automated Tests (`test/features/notifications/`):**
+  - Added `notification_scheduler_and_security_test.dart` (quiet hours shifting, zero duplicates across repeated syncs, paid/completed exclusion, privacy redaction, permission gating, disable & logout cancellation) and `notifications_widget_test.dart`.
+
 ## [0.9.0] - 2026-11-19 — Phase 9: AI Integration
 
 ### Added

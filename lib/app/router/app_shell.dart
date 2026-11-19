@@ -12,6 +12,7 @@ import 'package:kaya/features/life/presentation/life_screen.dart';
 import 'package:kaya/features/life_vault/application/life_vault_controller.dart';
 import 'package:kaya/features/money/application/money_controller.dart';
 import 'package:kaya/features/money/presentation/money_screen.dart';
+import 'package:kaya/features/notifications/application/notification_controller.dart';
 import 'package:kaya/features/reminders/application/reminder_controller.dart';
 import 'package:kaya/features/routines/application/life_organization_controller.dart';
 import 'package:kaya/features/settings/presentation/settings_screen.dart';
@@ -36,6 +37,7 @@ class KayaAppShell extends StatefulWidget {
     this.lifeVaultController,
     this.lifeOrganizationController,
     this.assistantController,
+    this.notificationController,
   });
 
   final VoidCallback onReplayOnboarding;
@@ -48,6 +50,7 @@ class KayaAppShell extends StatefulWidget {
   final LifeVaultController? lifeVaultController;
   final LifeOrganizationController? lifeOrganizationController;
   final AssistantController? assistantController;
+  final NotificationController? notificationController;
 
   @override
   State<KayaAppShell> createState() => _KayaAppShellState();
@@ -103,6 +106,7 @@ class _KayaAppShellState extends State<KayaAppShell> {
         SettingsScreen(
           onReplayOnboarding: widget.onReplayOnboarding,
           authController: widget.authController,
+          notificationController: widget.notificationController,
         ),
       ],
     );
